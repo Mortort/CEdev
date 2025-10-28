@@ -1,0 +1,42 @@
+name: Build CEdev Project
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Install GCC and Make
+      - name: Install GCC and Make
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential
+
+      # Step 3: Set project name
+      - name: Set project folder
+        run: |
+          PROJECT_NAME="shapes"
+          echo "PROJECT_NAME=$PROJECT_NAME" >> $GITHUB_ENV
+
+      # Step 4: Build the project with Make
+      - name: Build project
+        run: |
+          cd Projects/$PROJECT_NAME
+          make
+
+      # Step 5: Upload the binary (assuming Makefile outputs 'main')
+      - name: Upload binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: project-binary
+          path: Projects/$PROJECT_NAME/main
