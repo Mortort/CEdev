@@ -50,9 +50,10 @@ jobs:
           cd Projects/$PROJECT_NAME
           make
 
-      # Step 6: Upload the compiled binary
+          
+      # Step 6: Upload the compiled .8xp binary
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: project-binary
-          path: Projects/$PROJECT_NAME/main
+          path: Projects/$PROJECT_NAME/bin/*.8xp
