@@ -16,8 +16,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Install GCC, Make, and unzip if needed
-      - name: Install build tools
+      # Step 2: Install GCC and Make
+      - name: Install GCC and Make
         run: |
           sudo apt update
           sudo apt install -y build-essential unzip
@@ -28,19 +28,29 @@ jobs:
           PROJECT_NAME="shapes"
           echo "PROJECT_NAME=$PROJECT_NAME" >> $GITHUB_ENV
 
-      # Step 4: Add CEdev root to PATH so Make can find cedev-config
-      - name: Add CEdev to PATH
+      # Step 4: Set paths for CEdev tools, includes, and libraries
+      - name: Setup CEdev environment
         run: |
-          export PATH=$PATH:$GITHUB_WORKSPACE
-          echo "PATH=$PATH:$GITHUB_WORKSPACE" >> $GITHUB_ENV
+          # Add CEdev/bin to PATH so make can find cedev-config
+          export PATH=$PATH:$GITHUB_WORKSPACE/bin
+          # Set C compiler include path
+          export C_INCLUDE_PATH=$GITHUB_WORKSPACE/include:$C_INCLUDE_PATH
+          # Set library paths
+          export LIBRARY_PATH=$GITHUB_WORKSPACE/lib:$LIBRARY_PATH
+          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/lib:$LD_LIBRARY_PATH
+          # Persist environment for later steps
+          echo "PATH=$PATH:$GITHUB_WORKSPACE/bin" >> $GITHUB_ENV
+          echo "C_INCLUDE_PATH=$GITHUB_WORKSPACE/include:$C_INCLUDE_PATH" >> $GITHUB_ENV
+          echo "LIBRARY_PATH=$GITHUB_WORKSPACE/lib:$LIBRARY_PATH" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$GITHUB_WORKSPACE/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
-      # Step 5: Build the project
+      # Step 5: Build the project using its Makefile
       - name: Build project
         run: |
           cd Projects/$PROJECT_NAME
           make
 
-      # Step 6: Upload the compiled binary (assumes Makefile outputs 'main')
+      # Step 6: Upload the compiled binary
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
