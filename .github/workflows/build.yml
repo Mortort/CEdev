@@ -12,29 +12,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout repo
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Install GCC and Make
-      - name: Install GCC and Make
+      # Step 2: Install GCC, Make, and unzip if needed
+      - name: Install build tools
         run: |
           sudo apt update
-          sudo apt install -y build-essential
+          sudo apt install -y build-essential unzip
 
-      # Step 3: Set project folder
+      # Step 3: Set project name
       - name: Set project folder
         run: |
           PROJECT_NAME="shapes"
           echo "PROJECT_NAME=$PROJECT_NAME" >> $GITHUB_ENV
 
-      # Step 4: Build the project
+      # Step 4: Add CEdev root to PATH so Make can find cedev-config
+      - name: Add CEdev to PATH
+        run: |
+          export PATH=$PATH:$GITHUB_WORKSPACE
+          echo "PATH=$PATH:$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
+      # Step 5: Build the project
       - name: Build project
         run: |
           cd Projects/$PROJECT_NAME
           make
 
-      # Step 5: Upload binary
+      # Step 6: Upload the compiled binary (assumes Makefile outputs 'main')
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
