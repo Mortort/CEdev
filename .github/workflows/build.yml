@@ -50,10 +50,15 @@ jobs:
           cd Projects/$PROJECT_NAME
           make
 
-          
+
       # Step 6: Upload the compiled .8xp binary
       - name: Upload binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: project-binary
-          path: Projects/$PROJECT_NAME/bin/*.8xp
+        run: |
+          FILE=$(find Projects/$PROJECT_NAME/bin -name "*.8xp" | head -n 1)
+          if [ -f "$FILE" ]; then
+            echo "Uploading $FILE"
+            gh actions upload-artifact --name project-binary --path "$FILE"
+          else
+            echo "No .8xp file found!"
+            exit 1
+          fi
