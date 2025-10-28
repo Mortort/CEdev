@@ -1,0 +1,121 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_scalblnf
+_scalblnf:
+	ld	hl, -4
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	ld	a, (ix + 9)
+	ld	(ix - 4), a
+	ld	iy, (ix + 12)
+	ld	a, (ix + 15)
+	ld	hl, -8388608
+	ld	e, -1
+	lea	bc, iy
+	call	__lcmps
+	call	pe, __setflag
+	jp	m, BB0_2
+	ld	d, 0
+	jr	BB0_3
+BB0_2:
+	ld	d, 1
+BB0_3:
+	bit	0, d
+	jr	nz, BB0_5
+	push	hl
+	pop	iy
+BB0_5:
+	ld	bc, 8388607
+	bit	0, d
+	jr	nz, BB0_7
+	ld	a, e
+BB0_7:
+	lea	hl, iy
+	ld	e, a
+	xor	a, a
+	call	__lcmps
+	call	pe, __setflag
+	jp	m, BB0_9
+	push	bc
+	pop	iy
+BB0_9:
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	ld	a, (ix - 4)
+	ld	(ix + 9), a
+	ld	(ix + 12), iy
+	ld	sp, ix
+	pop	ix
+	jp	_scalbnf
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_scalblnl
+_scalblnl:
+	ld	hl, -9
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	ld	hl, (ix + 9)
+	ld	(ix - 6), hl
+	ld	hl, (ix + 12)
+	ld	(ix - 9), hl
+	ld	iy, (ix + 15)
+	ld	a, (ix + 18)
+	ld	hl, -8388608
+	ld	e, -1
+	lea	bc, iy
+	call	__lcmps
+	call	pe, __setflag
+	jp	m, BB1_2
+	ld	d, 0
+	jr	BB1_3
+BB1_2:
+	ld	d, 1
+BB1_3:
+	bit	0, d
+	jr	nz, BB1_5
+	push	hl
+	pop	iy
+BB1_5:
+	ld	bc, 8388607
+	bit	0, d
+	jr	nz, BB1_7
+	ld	a, e
+BB1_7:
+	lea	hl, iy
+	ld	e, a
+	xor	a, a
+	call	__lcmps
+	call	pe, __setflag
+	jp	m, BB1_9
+	push	bc
+	pop	iy
+BB1_9:
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	ld	hl, (ix - 6)
+	ld	(ix + 9), hl
+	ld	hl, (ix - 9)
+	ld	(ix + 12), l
+	ld	(ix + 13), h
+	ld	(ix + 15), iy
+	ld	sp, ix
+	pop	ix
+	jp	_scalbnl
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_scalbln
+	label	_scalbln at _scalblnf
+
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project db91fd729cd188daf925aaf5043a6ca0d3660655)"
+	extern	__setflag
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	_scalbnf
+	extern	_scalbnl
+	extern	__lcmps

@@ -1,0 +1,23 @@
+	assume	adl=1
+
+	section	.text
+
+	public	_memset
+
+_memset:
+	ld	iy, 0
+	add	iy, sp
+	ld	hl, (iy + 3)
+	ld	bc, (iy + 9)
+	cpi
+	add	hl, bc
+	ret	c
+	dec	hl
+	ld	e, (iy + 6)
+	ld	(hl), e
+	ret	po
+	push	hl
+	pop	de
+	dec	de
+	lddr
+	ret
